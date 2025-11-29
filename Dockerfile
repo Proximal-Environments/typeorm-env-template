@@ -1,34 +1,16 @@
-FROM alpine:latest AS downloader
-# =============================================================
-# Stage 1: Download offline DB images with Crane
-# =============================================================
-COPY --from=gcr.io/go-containerregistry/crane:debug /ko-app/crane /usr/local/bin/crane
-WORKDIR /downloads
-
-RUN crane pull mysql:9.5.0 mysql.tar
-RUN crane pull mariadb:12.1.2 mariadb.tar
-RUN crane pull mongo:8 mongo.tar
-RUN crane pull ghcr.io/naorpeled/typeorm-postgres:pg17-postgis3-pgvectorv0.8.0 postgres.tar
-
 # =============================================================
 # Stage 2: Main environment image: ATTACH proximal image here
 # =============================================================
-FROM us-west1-docker.pkg.dev/proximal-core-0/environments/base:latest
+FROM ubuntu:24.04
 
 # 1. Install dependencies
-# Note: Switched 'docker-compose-plugin' -> 'docker-compose-v2' (or 'docker-compose')
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
       curl \
-      ca-certificates \
       gnupg \
       bash \
-      tar \
       xz-utils \
       git \
-      iptables \
-      docker.io \
-      docker-compose-v2 \
       wget \
       make \
       build-essential \
@@ -37,7 +19,6 @@ RUN apt-get update && \
       libbz2-dev \
       libreadline-dev \
       libsqlite3-dev \
-      llvm \
       libncursesw5-dev \
       tk-dev \
       libxml2-dev \
@@ -50,10 +31,6 @@ RUN apt-get update && \
 RUN git clone https://github.com/pyenv/pyenv.git ~/.pyenv
 ENV PYENV_ROOT="/root/.pyenv"
 ENV PATH="$PYENV_ROOT/bin:$PATH"
-
-# -------------------------------------------------------------
-# Install python
-# -------------------------------------------------------------
 
 # Install specific Python version for fetchr with proper caching
 # Pre-download Python source to enable Docker layer caching
@@ -99,18 +76,9 @@ RUN bash -c 'source $NVM_DIR/nvm.sh && \
 
 RUN rm /root/.nvmrc
 
-# -------------------------------------------------------------
-# Copy offline DB images & scripts
-# -------------------------------------------------------------
-COPY --from=downloader /downloads/*.tar /root/images/
 
 RUN mkdir -p /root/workspace
 WORKDIR /root/workspace
-
 COPY . /root/workspace
-
-RUN chmod +x /root/workspace/entrypoint.sh
-
-ENTRYPOINT ["/root/workspace/entrypoint.sh"]
 
 CMD [ "bash" ]
