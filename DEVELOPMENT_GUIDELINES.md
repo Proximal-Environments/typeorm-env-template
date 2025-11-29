@@ -276,8 +276,6 @@ await dataSource.transaction(async (manager) => {
 
 ## Resources
 
-- [Main Documentation](https://typeorm.io)
 - [Contributing Guide](../CONTRIBUTING.md)
 - [Developer Guide](../DEVELOPER.md)
 - [GitHub Repository](https://github.com/typeorm/typeorm)
-- [Issue Tracker](https://github.com/typeorm/typeorm/issues)
