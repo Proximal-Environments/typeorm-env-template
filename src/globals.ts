@@ -7,7 +7,6 @@ import { getFromContainer } from "./container"
 import { DataSource } from "./data-source/DataSource"
 import { EntityManager } from "./entity-manager/EntityManager"
 import { MongoEntityManager } from "./entity-manager/MongoEntityManager"
-import { SqljsEntityManager } from "./entity-manager/SqljsEntityManager"
 import { EntityTarget } from "./common/EntityTarget"
 import { Repository } from "./repository/Repository"
 import { TreeRepository } from "./repository/TreeRepository"
@@ -156,19 +155,6 @@ export function getMongoManager(
         .manager as MongoEntityManager
 }
 
-/**
- * Gets Sqljs entity manager from connection name.
- * "default" connection is used, when no name is specified.
- * Only works when Sqljs driver is used.
- *
- * @deprecated
- */
-export function getSqljsManager(
-    connectionName: string = "default",
-): SqljsEntityManager {
-    return getConnectionManager().get(connectionName)
-        .manager as SqljsEntityManager
-}
 
 /**
  * Gets repository for the given entity class.

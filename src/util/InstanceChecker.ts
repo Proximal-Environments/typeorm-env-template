@@ -1,5 +1,4 @@
 import type { MongoEntityManager } from "../entity-manager/MongoEntityManager"
-import type { SqljsEntityManager } from "../entity-manager/SqljsEntityManager"
 import type { EntitySchema } from "../entity-schema/EntitySchema"
 import type { FindOperator } from "../find-options/FindOperator"
 import type { EqualOperator } from "../find-options/EqualOperator"
@@ -74,9 +73,6 @@ export class InstanceChecker {
     }
     static isMongoEntityManager(obj: unknown): obj is MongoEntityManager {
         return this.check(obj, "MongoEntityManager")
-    }
-    static isSqljsEntityManager(obj: unknown): obj is SqljsEntityManager {
-        return this.check(obj, "SqljsEntityManager")
     }
     static isEntitySchema(obj: unknown): obj is EntitySchema {
         return this.check(obj, "EntitySchema")

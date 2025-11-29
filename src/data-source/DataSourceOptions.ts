@@ -6,7 +6,6 @@ import { SqlServerConnectionOptions } from "../driver/sqlserver/SqlServerConnect
 import { OracleConnectionOptions } from "../driver/oracle/OracleConnectionOptions"
 import { MongoConnectionOptions } from "../driver/mongodb/MongoConnectionOptions"
 import { CordovaConnectionOptions } from "../driver/cordova/CordovaConnectionOptions"
-import { SqljsConnectionOptions } from "../driver/sqljs/SqljsConnectionOptions"
 import { ReactNativeConnectionOptions } from "../driver/react-native/ReactNativeConnectionOptions"
 import { NativescriptConnectionOptions } from "../driver/nativescript/NativescriptConnectionOptions"
 import { ExpoConnectionOptions } from "../driver/expo/ExpoConnectionOptions"
@@ -31,7 +30,6 @@ export type DataSourceOptions =
     | CordovaConnectionOptions
     | NativescriptConnectionOptions
     | ReactNativeConnectionOptions
-    | SqljsConnectionOptions
     | MongoConnectionOptions
     | AuroraMysqlConnectionOptions
     | AuroraPostgresConnectionOptions

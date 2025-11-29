@@ -32,7 +32,6 @@ import { SelectQueryBuilder } from "../query-builder/SelectQueryBuilder"
 import { LoggerFactory } from "../logger/LoggerFactory"
 import { QueryResultCacheFactory } from "../cache/QueryResultCacheFactory"
 import { QueryResultCache } from "../cache/QueryResultCache"
-import { SqljsEntityManager } from "../entity-manager/SqljsEntityManager"
 import { RelationLoader } from "../query-builder/RelationLoader"
 import { ObjectUtils } from "../util/ObjectUtils"
 import { IsolationLevel } from "../driver/types/IsolationLevel"
@@ -186,20 +185,6 @@ export class DataSource {
             )
 
         return this.manager as MongoEntityManager
-    }
-
-    /**
-     * Gets a sql.js specific Entity Manager that allows to perform special load and save operations
-     *
-     * Available only in connection with the sqljs driver.
-     */
-    get sqljsManager(): SqljsEntityManager {
-        if (!InstanceChecker.isSqljsEntityManager(this.manager))
-            throw new TypeORMError(
-                `SqljsEntityManager is only available for Sqljs databases.`,
-            )
-
-        return this.manager
     }
 
     // -------------------------------------------------------------------------
