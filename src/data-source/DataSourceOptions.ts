@@ -13,7 +13,6 @@ import { ExpoConnectionOptions } from "../driver/expo/ExpoConnectionOptions"
 import { AuroraMysqlConnectionOptions } from "../driver/aurora-mysql/AuroraMysqlConnectionOptions"
 import { SapConnectionOptions } from "../driver/sap/SapConnectionOptions"
 import { AuroraPostgresConnectionOptions } from "../driver/aurora-postgres/AuroraPostgresConnectionOptions"
-import { BetterSqlite3ConnectionOptions } from "../driver/better-sqlite3/BetterSqlite3ConnectionOptions"
 import { CapacitorConnectionOptions } from "../driver/capacitor/CapacitorConnectionOptions"
 import { SpannerConnectionOptions } from "../driver/spanner/SpannerConnectionOptions"
 
@@ -36,6 +35,5 @@ export type DataSourceOptions =
     | AuroraMysqlConnectionOptions
     | AuroraPostgresConnectionOptions
     | ExpoConnectionOptions
-    | BetterSqlite3ConnectionOptions
     | CapacitorConnectionOptions
     | SpannerConnectionOptions
