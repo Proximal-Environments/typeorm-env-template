@@ -4,6 +4,7 @@ services:
   mysql-9:
     image: "mysql:9.5.0"
     container_name: "typeorm-mysql-9"
+    pull_policy: never
     ports:
       - "3306:3306"
     environment:
@@ -16,6 +17,7 @@ services:
   mariadb-12:
     image: "mariadb:12.1.2"
     container_name: "typeorm-mariadb-12"
+    pull_policy: never
     ports:
       - "3307:3306"
     environment:
@@ -26,11 +28,10 @@ services:
 
   # postgres
   postgres-17:
-    # postgis is postgres + PostGIS (only). If you need additional extensions,
-    # it's probably time to create a purpose-built image.
     platform: linux/amd64
     image: "ghcr.io/naorpeled/typeorm-postgres:pg17-postgis3-pgvectorv0.8.0"
     container_name: "typeorm-postgres-17"
+    pull_policy: never
     ports:
       - "5432:5432"
     environment:
@@ -42,5 +43,6 @@ services:
   mongodb:
     image: "mongo:8"
     container_name: "typeorm-mongodb"
+    pull_policy: never
     ports:
       - "27017:27017"
