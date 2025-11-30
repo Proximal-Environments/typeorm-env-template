@@ -15,6 +15,7 @@ import { SapConnectionOptions } from "../driver/sap/SapConnectionOptions"
 import { AuroraPostgresConnectionOptions } from "../driver/aurora-postgres/AuroraPostgresConnectionOptions"
 import { CapacitorConnectionOptions } from "../driver/capacitor/CapacitorConnectionOptions"
 import { SpannerConnectionOptions } from "../driver/spanner/SpannerConnectionOptions"
+import { BetterSqlite3ConnectionOptions } from "../driver/better-sqlite3/BetterSqlite3ConnectionOptions"
 
 /**
  * DataSourceOptions is an interface with settings and options for specific DataSource.
@@ -37,3 +38,4 @@ export type DataSourceOptions =
     | ExpoConnectionOptions
     | CapacitorConnectionOptions
     | SpannerConnectionOptions
+    | BetterSqlite3ConnectionOptions

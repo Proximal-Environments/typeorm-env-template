@@ -4,6 +4,7 @@ import { MongoDriver } from "./mongodb/MongoDriver"
 import { SqlServerDriver } from "./sqlserver/SqlServerDriver"
 import { OracleDriver } from "./oracle/OracleDriver"
 import { SqliteDriver } from "./sqlite/SqliteDriver"
+import { BetterSqlite3Driver } from "./better-sqlite3/BetterSqlite3Driver"
 import { CordovaDriver } from "./cordova/CordovaDriver"
 import { ReactNativeDriver } from "./react-native/ReactNativeDriver"
 import { NativescriptDriver } from "./nativescript/NativescriptDriver"
@@ -41,6 +42,8 @@ export class DriverFactory {
                 return new MysqlDriver(connection)
             case "sqlite":
                 return new SqliteDriver(connection)
+            case "better-sqlite3":
+                return new BetterSqlite3Driver(connection)
             case "cordova":
                 return new CordovaDriver(connection)
             case "nativescript":
@@ -85,6 +88,7 @@ export class DriverFactory {
                     "sqlite",
                     "sqljs",
                     "spanner",
+                    "better-sqlite3",
                 ])
         }
     }
