@@ -196,12 +196,12 @@ export class EntityMetadataBuilder {
                                     this.connection.driver,
                                 ) ||
                                 this.connection.driver.options.type ===
-                                    "aurora-mysql" ||
+                                "aurora-mysql" ||
                                 this.connection.driver.options.type ===
-                                    "mssql" ||
+                                "mssql" ||
                                 this.connection.driver.options.type === "sap" ||
                                 this.connection.driver.options.type ===
-                                    "spanner"
+                                "spanner"
                             ) {
                                 const index = new IndexMetadata({
                                     entityMetadata:
@@ -262,7 +262,7 @@ export class EntityMetadataBuilder {
                         if (
                             foreignKey &&
                             this.connection.driver.options.type ===
-                                "cockroachdb"
+                            "cockroachdb"
                         ) {
                             const index = new IndexMetadata({
                                 entityMetadata: relation.entityMetadata,
@@ -1020,6 +1020,12 @@ export class EntityMetadataBuilder {
         entityMetadata.beforeRecoverListeners = entityMetadata.listeners.filter(
             (listener) => listener.type === EventListenerTypes.BEFORE_RECOVER,
         )
+        entityMetadata.beforeSoftRemoveListeners = entityMetadata.listeners.filter(
+            (listener) => listener.type === EventListenerTypes.BEFORE_SOFT_REMOVE,
+        )
+        entityMetadata.afterSoftRemoveListeners = entityMetadata.listeners.filter(
+            (listener) => listener.type === EventListenerTypes.AFTER_SOFT_REMOVE,
+        )
         entityMetadata.indices = entityMetadata.embeddeds.reduce(
             (indices, embedded) => indices.concat(embedded.indicesFromTree),
             entityMetadata.ownIndices,
@@ -1117,10 +1123,10 @@ export class EntityMetadataBuilder {
             if (!inverseEntityMetadata)
                 throw new TypeORMError(
                     "Entity metadata for " +
-                        entityMetadata.name +
-                        "#" +
-                        relation.propertyPath +
-                        " was not found. Check if you specified a correct entity object and if it's connected in the connection options.",
+                    entityMetadata.name +
+                    "#" +
+                    relation.propertyPath +
+                    " was not found. Check if you specified a correct entity object and if it's connected in the connection options.",
                 )
 
             relation.inverseEntityMetadata = inverseEntityMetadata
@@ -1146,7 +1152,7 @@ export class EntityMetadataBuilder {
                 Array.isArray(givenColumnNames) &&
                 givenColumnNames.length === 1 &&
                 givenColumnNames[0] ===
-                    entityMetadata.discriminatorColumn?.databaseName,
+                entityMetadata.discriminatorColumn?.databaseName,
         )
 
         // If the discriminator column is already indexed, there is no need to
@@ -1185,21 +1191,21 @@ export class EntityMetadataBuilder {
                 const referencedEntityMetadata = entityMetadatas.find((m) =>
                     typeof foreignKeyType === "string"
                         ? m.targetName === foreignKeyType ||
-                          m.givenTableName === foreignKeyType
+                        m.givenTableName === foreignKeyType
                         : InstanceChecker.isEntitySchema(foreignKeyType)
-                        ? m.target === foreignKeyType.options.name ||
-                          m.target === foreignKeyType.options.target
-                        : m.target === foreignKeyType,
+                            ? m.target === foreignKeyType.options.name ||
+                            m.target === foreignKeyType.options.target
+                            : m.target === foreignKeyType,
                 )
 
                 if (!referencedEntityMetadata) {
                     throw new TypeORMError(
                         "Entity metadata for " +
-                            entityMetadata.name +
-                            (foreignKeyArgs.propertyName
-                                ? "#" + foreignKeyArgs.propertyName
-                                : "") +
-                            " was not found. Check if you specified a correct entity object and if it's connected in the connection options.",
+                        entityMetadata.name +
+                        (foreignKeyArgs.propertyName
+                            ? "#" + foreignKeyArgs.propertyName
+                            : "") +
+                        " was not found. Check if you specified a correct entity object and if it's connected in the connection options.",
                     )
                 }
 

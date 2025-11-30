@@ -488,6 +488,11 @@ export class EntityMetadata {
     beforeSoftRemoveListeners: EntityListenerMetadata[] = []
 
     /**
+     * Listener metadatas with "AFTER SOFT REMOVE" type.
+     */
+    afterSoftRemoveListeners: EntityListenerMetadata[] = []
+
+    /**
      * Listener metadatas with "BEFORE RECOVER" type.
      */
     beforeRecoverListeners: EntityListenerMetadata[] = []
@@ -497,10 +502,7 @@ export class EntityMetadata {
      */
     afterRemoveListeners: EntityListenerMetadata[] = []
 
-    /**
-     * Listener metadatas with "AFTER SOFT REMOVE" type.
-     */
-    afterSoftRemoveListeners: EntityListenerMetadata[] = []
+
 
     /**
      * Listener metadatas with "AFTER RECOVER" type.
@@ -878,7 +880,7 @@ export class EntityMetadata {
                 this.childEntityMetadatas.find(
                     (meta) =>
                         manuallySetDiscriminatorValue ===
-                            meta.discriminatorValue ||
+                        meta.discriminatorValue ||
                         value.constructor === meta.target,
                 ) || this
             )
@@ -979,7 +981,7 @@ export class EntityMetadata {
         this.engine = this.tableMetadataArgs.engine
         this.database =
             this.tableMetadataArgs.type === "entity-child" &&
-            this.parentEntityMetadata
+                this.parentEntityMetadata
                 ? this.parentEntityMetadata.database
                 : this.tableMetadataArgs.database
         if (this.tableMetadataArgs.schema) {
@@ -994,7 +996,7 @@ export class EntityMetadata {
         }
         this.givenTableName =
             this.tableMetadataArgs.type === "entity-child" &&
-            this.parentEntityMetadata
+                this.parentEntityMetadata
                 ? this.parentEntityMetadata.givenTableName
                 : this.tableMetadataArgs.name
         this.synchronize =
@@ -1025,7 +1027,7 @@ export class EntityMetadata {
                 this.connection.driver.maxAliasLength &&
                 this.connection.driver.maxAliasLength > 0 &&
                 this.tableNameWithoutPrefix.length >
-                    this.connection.driver.maxAliasLength
+                this.connection.driver.maxAliasLength
             ) {
                 // note: we are not using DriverUtils.buildAlias here because we would like to avoid
                 // hashed table names. However, current algorithm also isn't perfect, but we cannot
@@ -1038,9 +1040,9 @@ export class EntityMetadata {
         }
         this.tableName = entityPrefix
             ? namingStrategy.prefixTableName(
-                  entityPrefix,
-                  this.tableNameWithoutPrefix,
-              )
+                entityPrefix,
+                this.tableNameWithoutPrefix,
+            )
             : this.tableNameWithoutPrefix
         this.target = this.target ? this.target : this.tableName
         this.name = this.targetName ? this.targetName : this.tableName

@@ -25,6 +25,8 @@ export class EventListenerTypes {
     static AFTER_UPDATE = "after-update" as const
     static BEFORE_REMOVE = "before-remove" as const
     static AFTER_REMOVE = "after-remove" as const
+    static BEFORE_SOFT_REMOVE = "before-soft-remove" as const
+    static AFTER_SOFT_REMOVE = "after-soft-remove" as const
     static BEFORE_RECOVER = "before-recover" as const
     static AFTER_RECOVER = "after-recover" as const
 }

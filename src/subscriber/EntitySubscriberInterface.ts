@@ -6,6 +6,7 @@ import { RemoveEvent } from "./event/RemoveEvent"
 import { InsertEvent } from "./event/InsertEvent"
 import { LoadEvent } from "./event/LoadEvent"
 import { RecoverEvent } from "./event/RecoverEvent"
+import { SoftRemoveEvent } from "./event/SoftRemoveEvent"
 import { AfterQueryEvent, BeforeQueryEvent } from "./event/QueryEvent"
 
 /**
@@ -74,6 +75,15 @@ export interface EntitySubscriberInterface<Entity = any> {
      */
     afterRemove?(event: RemoveEvent<Entity>): Promise<any> | void
 
+    /**
+     * Called before entity is soft-removed from the database.
+     */
+    beforeSoftRemove?(event: SoftRemoveEvent<Entity>): Promise<any> | void
+
+    /**
+     * Called after entity is soft-removed from the database.
+     */
+    afterSoftRemove?(event: SoftRemoveEvent<Entity>): Promise<any> | void
 
     /**
      * Called after entity is recovered in the database.

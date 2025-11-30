@@ -274,6 +274,15 @@ export class SubjectExecutor {
                     subject.identifier,
                 ),
             )
+        if (this.softRemoveSubjects.length)
+            this.softRemoveSubjects.forEach((subject) =>
+                this.queryRunner.broadcaster.broadcastBeforeSoftRemoveEvent(
+                    result,
+                    subject.metadata,
+                    subject.entity!,
+                    subject.databaseEntity,
+                ),
+            )
         return result
     }
 
@@ -322,6 +331,15 @@ export class SubjectExecutor {
                     subject.entity!,
                     subject.databaseEntity,
                     subject.identifier,
+                ),
+            )
+        if (this.softRemoveSubjects.length)
+            this.softRemoveSubjects.forEach((subject) =>
+                this.queryRunner.broadcaster.broadcastAfterSoftRemoveEvent(
+                    result,
+                    subject.metadata,
+                    subject.entity!,
+                    subject.databaseEntity,
                 ),
             )
         return result
@@ -379,9 +397,9 @@ export class SubjectExecutor {
                         subject.changeMaps.length === 0 ||
                         subject.metadata.treeType ||
                         this.queryRunner.connection.driver.options.type ===
-                            "oracle" ||
+                        "oracle" ||
                         this.queryRunner.connection.driver.options.type ===
-                            "sap"
+                        "sap"
                     ) {
                         singleInsertSubjects.push(subject)
                     } else {
@@ -1020,7 +1038,7 @@ export class SubjectExecutor {
                     subject.metadata.objectIdColumn &&
                     subject.metadata.objectIdColumn.databaseName &&
                     subject.metadata.objectIdColumn.databaseName !==
-                        subject.metadata.objectIdColumn.propertyName
+                    subject.metadata.objectIdColumn.propertyName
                 ) {
                     delete subject.entity[
                         subject.metadata.objectIdColumn.databaseName
@@ -1078,8 +1096,8 @@ export class SubjectExecutor {
                                             updatedRelationMap.value,
                                         )
                                             ? column.referencedColumn!.getEntityValue(
-                                                  updatedRelationMap.value,
-                                              )
+                                                updatedRelationMap.value,
+                                            )
                                             : updatedRelationMap.value,
                                     )
                                 },
