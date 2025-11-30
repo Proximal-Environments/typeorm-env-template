@@ -22,7 +22,7 @@ npm-debug.log*
 *.iml
 
 ### Custom ###
-/ormconfig.json
+# /ormconfig.json
 ormlogs.log
 
 /test/github-issues/799/tmp/*

@@ -1,33 +1,10 @@
-# =============================================================
-# Stage 2: Main environment image: ATTACH proximal image here
-# =============================================================
-FROM ubuntu:24.04
+# GCP base image
+FROM us-west1-docker.pkg.dev/proximal-core-0/environments/base:latest
 
-# 1. Install dependencies
-RUN apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y \
-      curl \
-      gnupg \
-      bash \
-      xz-utils \
-      git \
-      wget \
-      make \
-      build-essential \
-      libssl-dev \
-      zlib1g-dev \
-      libbz2-dev \
-      libreadline-dev \
-      libsqlite3-dev \
-      libncursesw5-dev \
-      tk-dev \
-      libxml2-dev \
-      libxmlsec1-dev \
-      libffi-dev \
-      liblzma-dev \
-      && rm -rf /var/lib/apt/lists/*
 
-# Install pyenv
+# ========================================
+# Layer 2: Python installation (rarely changes)
+# ========================================
 RUN git clone https://github.com/pyenv/pyenv.git ~/.pyenv
 ENV PYENV_ROOT="/root/.pyenv"
 ENV PATH="$PYENV_ROOT/bin:$PATH"
@@ -53,19 +30,15 @@ ENV PATH="${PYENV_ROOT}/versions/3.11.9/bin:${PYENV_ROOT}/bin:${PATH}"
 RUN eval "$(pyenv init -)" && pip install --upgrade pip setuptools wheel
 
 
-# -------------------------------------------------------------
-# Install Node via NVM
-# -------------------------------------------------------------
+# ========================================
+# Layer 3: Node installation (rarely changes)
+# ========================================
 ENV NVM_DIR="/root/.nvm"
 RUN mkdir -p $NVM_DIR
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 
 COPY .nvmrc /root/.nvmrc
 
-# FIX DETAILS:
-# 1. We use single quotes ('...') for the bash command so Docker doesn't mess up the variables.
-# 2. We explicitly cat the file: `nvm install $(cat /root/.nvmrc)`
-# 3. We use `nvm current` to find the exact installed path for the symlinks.
 RUN bash -c 'source $NVM_DIR/nvm.sh && \
     target_ver=$(cat /root/.nvmrc) && \
     nvm install $target_ver && \
@@ -77,8 +50,10 @@ RUN bash -c 'source $NVM_DIR/nvm.sh && \
 RUN rm /root/.nvmrc
 
 
+# ========================================
+# Layer 4: Workspace
+# ========================================
 RUN mkdir -p /root/workspace
 WORKDIR /root/workspace
-COPY . /root/workspace
 
-CMD [ "bash" ]
+RUN npm ci
