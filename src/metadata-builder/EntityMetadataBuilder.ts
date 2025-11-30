@@ -1005,11 +1005,6 @@ export class EntityMetadataBuilder {
         entityMetadata.afterRemoveListeners = entityMetadata.listeners.filter(
             (listener) => listener.type === EventListenerTypes.AFTER_REMOVE,
         )
-        entityMetadata.afterSoftRemoveListeners =
-            entityMetadata.listeners.filter(
-                (listener) =>
-                    listener.type === EventListenerTypes.AFTER_SOFT_REMOVE,
-            )
         entityMetadata.afterRecoverListeners = entityMetadata.listeners.filter(
             (listener) => listener.type === EventListenerTypes.AFTER_RECOVER,
         )
@@ -1022,11 +1017,6 @@ export class EntityMetadataBuilder {
         entityMetadata.beforeRemoveListeners = entityMetadata.listeners.filter(
             (listener) => listener.type === EventListenerTypes.BEFORE_REMOVE,
         )
-        entityMetadata.beforeSoftRemoveListeners =
-            entityMetadata.listeners.filter(
-                (listener) =>
-                    listener.type === EventListenerTypes.BEFORE_SOFT_REMOVE,
-            )
         entityMetadata.beforeRecoverListeners = entityMetadata.listeners.filter(
             (listener) => listener.type === EventListenerTypes.BEFORE_RECOVER,
         )

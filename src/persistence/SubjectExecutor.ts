@@ -264,16 +264,6 @@ export class SubjectExecutor {
                     subject.identifier,
                 ),
             )
-        if (this.softRemoveSubjects.length)
-            this.softRemoveSubjects.forEach((subject) =>
-                this.queryRunner.broadcaster.broadcastBeforeSoftRemoveEvent(
-                    result,
-                    subject.metadata,
-                    subject.entity!,
-                    subject.databaseEntity,
-                    subject.identifier,
-                ),
-            )
         if (this.recoverSubjects.length)
             this.recoverSubjects.forEach((subject) =>
                 this.queryRunner.broadcaster.broadcastBeforeRecoverEvent(
@@ -317,16 +307,6 @@ export class SubjectExecutor {
         if (this.removeSubjects.length)
             this.removeSubjects.forEach((subject) =>
                 this.queryRunner.broadcaster.broadcastAfterRemoveEvent(
-                    result,
-                    subject.metadata,
-                    subject.entity!,
-                    subject.databaseEntity,
-                    subject.identifier,
-                ),
-            )
-        if (this.softRemoveSubjects.length)
-            this.softRemoveSubjects.forEach((subject) =>
-                this.queryRunner.broadcaster.broadcastAfterSoftRemoveEvent(
                     result,
                     subject.metadata,
                     subject.entity!,
