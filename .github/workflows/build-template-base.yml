@@ -1,0 +1,99 @@
+name: Build Template Base Image
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  trigger-build:
+    runs-on:
+      group: proximal-runners
+    steps:
+      - name: Install Temporal CLI
+        run: |
+          curl -sSf https://temporal.download/cli.sh | sh -s -- --dir /tmp/temporal
+          echo "/tmp/temporal/bin" >> $GITHUB_PATH
+
+      - name: Extract template info
+        id: vars
+        run: |
+          # Derive template name from repo name: "manim-v4-env-template" -> "manim-v4"
+          REPO_NAME="${{ github.event.repository.name }}"
+          TEMPLATE_NAME=$(echo "$REPO_NAME" | sed 's/-env-template$//')
+          BASE_IMAGE_NAME="${TEMPLATE_NAME}-template-base"
+          BRANCH=${GITHUB_REF#refs/heads/}
+          BRANCH_SAFE=$(echo $BRANCH | tr '/' '-')
+          echo "template_name=$TEMPLATE_NAME" >> $GITHUB_OUTPUT
+          echo "base_image_name=$BASE_IMAGE_NAME" >> $GITHUB_OUTPUT
+          echo "branch=$BRANCH_SAFE" >> $GITHUB_OUTPUT
+          echo "Template: $TEMPLATE_NAME"
+          echo "Base image: $BASE_IMAGE_NAME"
+
+      - name: Trigger Temporal build workflow
+        env:
+          TEMPORAL_ADDRESS: ${{ secrets.TEMPORAL_ADDRESS }}
+          TEMPORAL_NAMESPACE: ${{ secrets.TEMPORAL_NAMESPACE }}
+          TEMPORAL_API_KEY: ${{ secrets.TEMPORAL_API_KEY }}
+        run: |
+          # Generate workflow ID
+          WORKFLOW_ID="template-build-${{ steps.vars.outputs.template_name }}-${GITHUB_SHA:0:7}-$(date +%s)"
+          
+          # Set up trap to cancel Temporal workflow if GitHub Actions job is cancelled
+          cleanup() {
+            echo ""
+            echo "GitHub Actions cancelled - cancelling Temporal workflow..."
+            /tmp/temporal/bin/temporal workflow cancel \
+              --address "$TEMPORAL_ADDRESS" \
+              --namespace "$TEMPORAL_NAMESPACE" \
+              --api-key "$TEMPORAL_API_KEY" \
+              --tls \
+              --workflow-id "$WORKFLOW_ID" 2>/dev/null || true
+            echo "Temporal workflow cancellation requested"
+          }
+          trap cleanup EXIT
+          
+          echo "Starting Temporal workflow: $WORKFLOW_ID"
+          
+          # Start the workflow
+          /tmp/temporal/bin/temporal workflow start \
+            --address "$TEMPORAL_ADDRESS" \
+            --namespace "$TEMPORAL_NAMESPACE" \
+            --api-key "$TEMPORAL_API_KEY" \
+            --tls \
+            --task-queue build-queue \
+            --type templateBuildWorkflow \
+            --workflow-id "$WORKFLOW_ID" \
+            --input "{
+              \"templateRepoFullName\": \"${{ github.repository }}\",
+              \"templateName\": \"${{ steps.vars.outputs.template_name }}\",
+              \"baseImageName\": \"${{ steps.vars.outputs.base_image_name }}\",
+              \"commitSha\": \"${{ github.sha }}\",
+              \"branch\": \"${{ steps.vars.outputs.branch }}\",
+              \"triggeredBy\": \"push\"
+            }"
+          
+          echo ""
+          echo "Workflow started. Following execution..."
+          echo ""
+          
+          # Follow the workflow execution and capture output
+          RESULT=$(/tmp/temporal/bin/temporal workflow show \
+            --address "$TEMPORAL_ADDRESS" \
+            --namespace "$TEMPORAL_NAMESPACE" \
+            --api-key "$TEMPORAL_API_KEY" \
+            --tls \
+            --workflow-id "$WORKFLOW_ID" \
+            --follow 2>&1) || true
+          
+          echo "$RESULT"
+          
+          # Disable cleanup trap (workflow already completed)
+          trap - EXIT
+          
+          # Check if the workflow result indicates failure
+          if echo "$RESULT" | grep -q '"success":false'; then
+            echo ""
+            echo "::error::Build failed - check Temporal workflow for details: $WORKFLOW_ID"
+            exit 1
+          fi
